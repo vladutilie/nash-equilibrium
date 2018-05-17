@@ -13,6 +13,7 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<h1>N doors problem | <sup>go to <a href="index.php">Nash Equilibria problem</a></sup></h1>
+					<i class="glyphicon glyphicon-eye-open"></i> <a href="https://github.com/vladutilie/nash-equilibrium" target="_blank">View github project</a><br />
 					<i class="glyphicon glyphicon-info-sign"></i> <a class="btn btn-link" data-toggle="collapse" data-target="#requirements">Show requirements <i class="glyphicon glyphicon-chevron-down"></i></a>
 					<div id="requirements" class="collapse">
 						<p>

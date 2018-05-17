@@ -40,6 +40,7 @@ function calculate( $payoffs ) {
 	$P2_strategies = $_SESSION['P2_strategies']; // number of cols
 
 	$pos = array();
+	// Initialize the matrix values
 	for ( $row = 0; $row < $P1_strategies; $row++ ) {
 		for ( $col = 0; $col < $P2_strategies; $col++ ) {
 			$pos[ $row ][ $col ] = 0;
@@ -47,9 +48,9 @@ function calculate( $payoffs ) {
 	}
 
 	$pos_row = $pos_col = array();
-	// [0] Max of the column
+	// [0] Get max of the columns
 	for ( $col = 0; $col < $P2_strategies; $col++ ) {
-		$max_col = array( -11, array( 0, 0 ) ); // [value_to_compare-1, [array of coords]]
+		$max_col = array( -11, array( 0, 0 ) ); // [ value_to_compare-1, [ array of coords ] ]
 		for ( $row = 0; $row < $P1_strategies; $row++ ) {
 			if ( $payoffs[ $row ][ $col ][0] > $max_col[0] ) {
 				$max_col[0] = $payoffs[ $row ][ $col ][0];
@@ -59,9 +60,9 @@ function calculate( $payoffs ) {
 		array_push( $pos_col, $max_col[1] );
 	}
 	
-	// [1] Max of the row
+	// [1] Get max of the rows
 	for ( $row = 0; $row < $P1_strategies; $row++ ) {
-		$max_row = array( -11, array( -1, -1 ) ); // [value_to_compare-1, [array of coords]]
+		$max_row = array( -11, array( -1, -1 ) ); // [ value_to_compare-1, [ array of coords ] ]
 		for ( $col = 0; $col < $P2_strategies; $col++ ) {
 			if ( $payoffs[ $row ][ $col ][1] > $max_row[0] ) {
 				$max_row[0] = $payoffs[ $row ][ $col ][1];
@@ -85,7 +86,6 @@ function calculate( $payoffs ) {
 						$str .= '[' . $row . '][' . $col . '], ';
 				}
 			}
-			//$str .= '[' . $p[0] . '][' . $p[1] . '],';
 		}
 	}
 
@@ -98,32 +98,36 @@ function calculate( $payoffs ) {
 }
 
 // Functions for the 2nd problem
+
+// Initializing the doors: all are closed and one of them (random chosen) has the gift
 function init_doors( &$doors, $n ) {
 	for ( $i = 0; $i < $n; $i++ ) {
-		$doors[ $i ] = array( 0, 0 ); // [ 0 - closed, 0 - no gift ]
+		$doors[ $i ] = array( 0, 0 ); // [ 1/0 - opened/closed | 1/0 - has/has not the gift ]
 	}
 	$rand_door = rand( 0, $n - 1 ); // choose a random door
-	$doors[ $rand_door ][1] = 1; // put the gift behind a random door :)
+	$doors[ $rand_door ][1] = 1; // put the gift behind the random chosen door :)
 }
 
 function strategy_1( $doors, $n, &$S1_pass ) {
-	$rand = rand( 0, $n - 1 );
-	if ( 1 == $doors[ $rand ][1] ) {
-		$S1_pass++;
+	$rand = rand( 0, $n - 1 ); // choose a random door
+	if ( 1 == $doors[ $rand ][1] ) { // check if the door has the gift
+		$S1_pass++; // the gift is here
 	}
 }
 
 function strategy_2( $doors, $n, &$S2_pass ) {
-	$rand = rand( 0, $n - 1 );
-	if ( 1 == $doors[ $rand ][1] ) {
-		$S2_pass++;
+	$rand = rand( 0, $n - 1 ); // choose a random door
+	if ( 1 == $doors[ $rand ][1] ) { // check if the chosen door has the gift
+		$S2_pass++; // the gift is here
+		$doors[ $rand ][0] = 1; // Here is opening the door!
 	} else {
 		$rand = rand( 0, $n - 1 );
 		while ( 1 == $doors[ $rand ][0] ) { // while the chosen door is OPENED
 			$rand = rand( 0, $n - 1);	// choose another one, hoping the next one is CLOSED
 		}
-		if ( 1 == $doors[ $rand ][1] ) {
-			$S2_pass++;
+		if ( 0 == $doors[ $rand ][0] && 1 == $doors[ $rand ][1] ) {
+			// check if the door is closed (to be opened) and it has the gift
+			$S2_pass++; // if it has the gift, we notice that :)
 		}
 	}
 }
